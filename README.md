@@ -1,2 +1,3 @@
 # ML_Capstone_Learning
-Learning to build a solution in AI/ML as part of capstone project
+This repository contains my capstone project as part of my AI/ML learning course.
+Idea is to focus on applying AI/ML concepts to build a practical/ reliable solution.
