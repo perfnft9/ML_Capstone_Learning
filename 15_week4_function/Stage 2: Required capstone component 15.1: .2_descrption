@@ -1,0 +1,60 @@
+Stage 2: Required capstone component 15.1: Refining your strategies for the black-box optimisation challenge - Section A
+
+
+Support-Vector–Like Inputs and Rapid Change Regions
+
+Across the four iterations, several evaluated inputs behaved similarly to support vectors, in the sense that small perturbations in their values resulted in significant changes in the objective function output. This was particularly evident in Function 5, where the output increased from 853 (Week 1) to 1645 (Week 2), before decreasing to 1011 (Week 3). The substantial drop between Weeks 2 and 3, despite only small changes in the inputs, suggests that Week 2 was located near a sharp peak or region of rapid change. This point effectively defines the boundary between moderate and very high objective values.
+
+Recognising such points is valuable because they indicate regions where the function landscape is steep. In these cases, future queries should focus on fine-grained local refinement rather than broad exploration. In contrast, for functions such as Function 1, where outputs remained extremely small across iterations, the lack of variation suggests either a flat region or a narrow optimum not yet located. This justifies a more exploratory strategy in that case.
+
+Use of Surrogate Models and Output Sensitivity
+
+A Gaussian Process (GP) surrogate model was used to approximate the underlying black-box function. The GP was chosen due to its suitability for small datasets and its ability to provide both predictive mean and uncertainty estimates. These two components supported a balanced exploration–exploitation strategy via an acquisition function.
+
+Although a neural network surrogate was not explicitly trained, such a model could provide gradient information, indicating how sensitive the output is to each input dimension. The gradient (partial derivatives of the output with respect to each input) would identify directions in which the function increases or decreases most rapidly. In regions such as the peak observed in Function 5, gradients would likely be steep, guiding the search toward more precise local optimisation.
+
+However, given the limited number of evaluations available in this capstone, a neural network may overfit. Therefore, the Gaussian Process was preferred for its stability and built-in uncertainty quantification.
+
+Framing the Problem as a Classification Task
+
+The black-box optimisation problem can alternatively be framed as a classification task by labelling outputs as “good” or “bad” based on a threshold (e.g., above or below the median). In this formulation, models such as logistic regression, Support Vector Machines (SVMs), or neural networks could be used to approximate the decision boundary separating high-performing from low-performing regions.
+
+For example, in Function 5, the region around the Week 2 query would likely be classified as “good”, forming a small high-value cluster. A classifier would attempt to identify and separate this region from the rest of the search space.
+
+The main trade-off in this approach concerns misclassification versus exploration. A conservative boundary may reduce false positives but miss potentially high-performing unexplored areas. Conversely, a more flexible model may capture complex boundaries but risk overfitting, particularly with limited data. Therefore, while classification can help identify promising regions, it does not directly optimise continuous objective values.
+
+Model Selection and Interpretability
+
+When considering different modelling approaches, the choice involved balancing interpretability and flexibility.
+
+Linear regression is highly interpretable but unable to model non-linear surfaces.
+
+SVMs can capture non-linear boundaries (with kernels) but do not naturally provide uncertainty estimates.
+
+Neural networks offer high flexibility but require larger datasets and careful tuning.
+
+Gaussian Processes provide non-linear modelling capacity and uncertainty estimation, making them well-suited to low-sample optimisation problems.
+
+Given the small number of function evaluations available per function, the Gaussian Process model was the most appropriate compromise between flexibility and robustness.
+
+Variable Influence and Gradient Interpretation
+
+Although explicit gradient analysis was not performed, behaviour across iterations suggests that certain dimensions have stronger influence than others. In Function 5, small adjustments in the third and fourth input dimensions appeared to cause substantial output variation, indicating high sensitivity. Identifying such influential variables can prioritise more precise tuning in subsequent iterations.
+
+If a neural network surrogate were trained, examining gradient magnitudes or weight sensitivities could further highlight which inputs contribute most strongly to predictions. This would allow future experiments to concentrate on the most impactful dimensions while reducing unnecessary exploration in less sensitive directions.
+
+Neural Networks and Non-Linearity
+
+Compared to simpler linear or logistic regression models, neural networks are better able to capture complex, non-linear relationships. In functions exhibiting sharp peaks or curved ridges, such as Function 5, a neural network could approximate the decision boundary more accurately than a linear model.
+
+Backpropagation enables the network to iteratively adjust weights in order to minimise prediction error, thereby shaping a non-linear decision surface. However, the increased flexibility comes at the cost of interpretability and greater risk of overfitting, particularly with limited training data.
+
+In this capstone context, the added complexity of neural networks may not fully justify their use, given the restricted number of observations.
+
+Overall Evaluation of Strategy
+
+The optimisation strategy evolved from broader exploration in early iterations to more targeted exploitation around high-performing regions. Sharp peaks required careful local refinement, whereas flatter regions justified wider sampling.
+
+The use of a Gaussian Process surrogate supported this adaptive behaviour by modelling non-linearity while quantifying uncertainty. Framing the problem as classification provided additional conceptual insight into the structure of promising regions but was less directly useful for continuous optimisation.
+
+Overall, the strategy balanced exploration and exploitation effectively while remaining appropriate for the limited evaluation budget.
